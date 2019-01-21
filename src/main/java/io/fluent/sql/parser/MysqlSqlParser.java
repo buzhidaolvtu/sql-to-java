@@ -11,6 +11,10 @@ import java.util.stream.Collectors;
 
 public class MysqlSqlParser {
     public static void main(String[] args) throws IOException {
+        if(args.length == 0){
+            System.err.println("no input file.");
+            System.exit(1);
+        }
         String path = args[0];
         FileInputStream fis = new FileInputStream(new File(path));
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
