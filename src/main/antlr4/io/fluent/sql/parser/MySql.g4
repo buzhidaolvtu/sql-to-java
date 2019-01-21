@@ -30,6 +30,8 @@ create_table:
     CREATE (TEMPORARY)? TABLE (IF NOT EXISTS)? tbl_name '('
         create_definition (',' create_definition)*
         ')' table_options?  #createTable
+    |CREATE (TEMPORARY)? TABLE (IF NOT EXISTS)? tbl_name
+        ((LIKE tbl_name)|(LIKE tbl_name))  #createTableLike
     ;
 
 create_definition:
