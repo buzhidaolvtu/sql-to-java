@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class MysqlGenerator {
     public static void main(String[] args) throws IOException {
-        if(args.length == 0){
+        if (args.length == 0) {
             System.err.println("no input file.");
             System.exit(1);
         }
@@ -42,7 +42,29 @@ public class MysqlGenerator {
         });
     }
 
-    private static String generateInsertSql(String tableName, List<String> columnNames) {
+    public static List<String> generateInsertSqlFrom(String script) {
+        final MySqlLexer sqlBaseLexer = new MySqlLexer(new CaseInsensitiveStream(CharStreams.fromString(script)));
+        final CommonTokenStream tokenStream = new CommonTokenStream(sqlBaseLexer);
+        final MySqlParser mySqlParser = new MySqlParser(tokenStream);
+        mySqlParser.getInterpreter().setPredictionMode(PredictionMode.LL_EXACT_AMBIG_DETECTION);
+
+        MySqlParser.StatementsContext statements = mySqlParser.statements();
+
+        return statements.singleStatement().stream().map(singleStatementContext -> {
+            TableNameVisitor tableNameVisitor = new TableNameVisitor();
+            tableNameVisitor.visitSingleStatement(singleStatementContext);
+
+            String tableName = tableNameVisitor.getTableName();
+
+            ColumnNameVisitor columnNameVisitor = new ColumnNameVisitor();
+            columnNameVisitor.visitSingleStatement(singleStatementContext);
+            List<String> columnNames = columnNameVisitor.getColumnNames();
+
+            return generateInsertSql(tableName, columnNames);
+        }).collect(Collectors.toList());
+    }
+
+    public static String generateInsertSql(String tableName, List<String> columnNames) {
         StringBuilder stringBuilder = new StringBuilder(200);
         stringBuilder.append("insert into ")
                 .append(tableName.replaceAll("`", ""))
