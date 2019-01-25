@@ -204,6 +204,7 @@ create table `t_scm_inventory_account_detail_bill` (
   key idx_account_sn(`account_sn`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='在库详细清单';
 
+# 添加库存预警设置时，针对每一个物料的预警清单
 create table `t_scm_inventory_account_bill_alarm_setting` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
   `account_sn` varchar(100) NOT NULL DEFAULT '' COMMENT '库存总账户编码',
@@ -223,10 +224,9 @@ create table `t_scm_inventory_account_bill_alarm_setting` (
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='在库数量清单预警设置';
 
 # 添加库存预警设置时，关联的生产车型信息
-create table `t_scm_inventory_account_alarm_pro_bike_model_mapping` (
+create table `t_scm_inventory_account_alarm_mapping` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
   `account_sn` varchar(100) NOT NULL DEFAULT '' COMMENT '库存总账户编码',
-  `repository_sn`  varchar(100) NOT NULL DEFAULT '' COMMENT '仓库编码',
 
   `production_bike_model_id` bigint NOT NULL COMMENT '生产车型内部唯一ID',
   `production_bike_model` varchar(100) NOT NULL COMMENT '生产车型编码',

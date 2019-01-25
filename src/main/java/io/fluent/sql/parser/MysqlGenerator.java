@@ -9,7 +9,7 @@ import java.io.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class MysqlSqlParser {
+public class MysqlGenerator {
     public static void main(String[] args) throws IOException {
         if(args.length == 0){
             System.err.println("no input file.");
