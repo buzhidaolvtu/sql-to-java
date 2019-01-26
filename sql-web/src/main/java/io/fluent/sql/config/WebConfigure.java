@@ -23,10 +23,15 @@ public class WebConfigure extends WebMvcConfigurationSupport {
     }
 
 
+    /**
+     * 如果重载这个方法了，那么好像就需要把handler和location都配置一下。thymeleaf的自动配置和这里没有关系。
+     * https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#boot-features-spring-mvc-static-content
+     * @param registry
+     */
     @Override
     protected void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/static/**")
-                .addResourceLocations("classpath:/templates/")
+        registry.addResourceHandler("/static/**")//只有"**"部分会被添加到如下位置，如：
+                .addResourceLocations("classpath:/templates/")///static/js/abx.js,那么classpath:/templates/js/abx.js会被查找
                 .setCachePeriod(31556926);
     }
 
