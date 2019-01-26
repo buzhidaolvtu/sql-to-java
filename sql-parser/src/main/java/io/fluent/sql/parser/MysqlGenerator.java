@@ -6,6 +6,7 @@ import org.antlr.v4.runtime.atn.PredictionMode;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,25 +22,8 @@ public class MysqlGenerator {
         IOUtils.copy(fis, bos);
         String sqlFromFile = bos.toString("utf-8");
 
-        final MySqlLexer sqlBaseLexer = new MySqlLexer(new CaseInsensitiveStream(CharStreams.fromString(sqlFromFile)));
-        final CommonTokenStream tokenStream = new CommonTokenStream(sqlBaseLexer);
-        final MySqlParser mySqlParser = new MySqlParser(tokenStream);
-        mySqlParser.getInterpreter().setPredictionMode(PredictionMode.LL_EXACT_AMBIG_DETECTION);
-
-        MySqlParser.StatementsContext statements = mySqlParser.statements();
-
-        statements.singleStatement().forEach(singleStatementContext -> {
-            TableNameVisitor tableNameVisitor = new TableNameVisitor();
-            tableNameVisitor.visitSingleStatement(singleStatementContext);
-
-            String tableName = tableNameVisitor.getTableName();
-
-            ColumnNameVisitor columnNameVisitor = new ColumnNameVisitor();
-            columnNameVisitor.visitSingleStatement(singleStatementContext);
-            List<String> columnNames = columnNameVisitor.getColumnNames();
-
-            System.out.println(generateInsertSql(tableName, columnNames));
-        });
+        List<String> strings = generateInsertSqlFrom(sqlFromFile);
+        strings.forEach(s -> System.out.println(s));
     }
 
     public static List<String> generateInsertSqlFrom(String script) {
@@ -47,10 +31,12 @@ public class MysqlGenerator {
         final CommonTokenStream tokenStream = new CommonTokenStream(sqlBaseLexer);
         final MySqlParser mySqlParser = new MySqlParser(tokenStream);
         mySqlParser.getInterpreter().setPredictionMode(PredictionMode.LL_EXACT_AMBIG_DETECTION);
+        ParserErrorListener listener = new ParserErrorListener();
+        mySqlParser.addErrorListener(listener);
 
         MySqlParser.StatementsContext statements = mySqlParser.statements();
 
-        return statements.singleStatement().stream().map(singleStatementContext -> {
+        List<String> collect = statements.singleStatement().stream().map(singleStatementContext -> {
             TableNameVisitor tableNameVisitor = new TableNameVisitor();
             tableNameVisitor.visitSingleStatement(singleStatementContext);
 
@@ -62,6 +48,11 @@ public class MysqlGenerator {
 
             return generateInsertSql(tableName, columnNames);
         }).collect(Collectors.toList());
+
+        List<String> result = new ArrayList<>();
+        result.addAll(listener.getErrorMessages());
+        result.addAll(collect);
+        return result;
     }
 
     public static String generateInsertSql(String tableName, List<String> columnNames) {
