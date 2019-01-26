@@ -2,23 +2,58 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>sql-translate</title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SQL</title>
+    <style>
+      .v-header{width: 622px;line-height: 80px;}
+      .btn{line-height: 32px;padding: 0 15px;border-radius: 4px;border: none;font-size: 15px;margin-left: 15px;outline: none}
+      .opration-btns{float: right;}
+      .send-btn{background:#52c41a;color: #fff;}
+      .reset-btn{color:#52c41a;border: 1px solid #73d13d;}
+      textarea{outline: none;font-size: 15px;padding: 15px;border-radius: 4px;border-color: #ccc;box-shadow: 0 3px 15px rgba(0, 0, 0, .2)}
+    </style>
 </head>
 <body>
-
-定义：<br>
-<textarea name="definition" style="width: 800px;height: 500px">
-
-
-</textarea>
-<br>
-翻译：<br>
-<textarea name="result" style="width: 800px;height: 500px">
-
-
-</textarea>
-
-
-
+    <div class="v-box">
+      <div class="v-wrapper">
+        <div class="v-header">
+          <label>定义:</label>
+          <div class="opration-btns">
+            <button class="send-btn btn">send</button>
+            <button class="reset-btn btn">reset</button>
+          </div>
+        </div>
+        <textarea rows="20" cols="73" id="definition" placeholder="在此输入或粘贴要翻译的内容..."></textarea>
+      </div>
+      <div class="v-wrapper">
+          <div class="v-header"><label>翻译:</label></div>
+          <textarea rows="20" cols="73" id="translate"></textarea>
+        </div>
+    </div>
+<script src="../static/js/zepto.min.js"></script>
+<script>
+    $(function () {
+      $('.send-btn').on('click', function () {
+        var iptVal = $('#definition').val();
+        $.ajax({
+          url: '/sql/script',
+          type: "post",
+          crossDomain: true,
+          data: iptVal,
+          success: (function (res) {
+            $('#translate').text(res)
+          }),
+          error: function (res) {
+            $('#translate').val('')
+            alert('请求失败');
+          }
+        })
+      })
+      $('.reset-btn').on('click', function(){
+        $('#definition').val('')
+      })
+    })
+</script>
 </body>
 </html>

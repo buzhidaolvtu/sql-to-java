@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.net.URLDecoder;
 import java.util.List;
 
 @CrossOrigin
@@ -16,7 +17,7 @@ import java.util.List;
 public class SqlController {
 
 
-    @RequestMapping(value = {"/",""})
+    @RequestMapping(value = {"/", ""})
     public String index() {
         return "index";
     }
@@ -24,8 +25,13 @@ public class SqlController {
     @RequestMapping("/script")
     @ResponseBody
     public String generateInsertSql(@RequestBody String script) {
-        List<String> strings = MysqlGenerator.generateInsertSqlFrom(script);
-        return StringUtils.join(strings, "\n");
+        try {
+            List<String> strings = MysqlGenerator.generateInsertSqlFrom(URLDecoder.decode(script, "utf-8"));
+            return StringUtils.join(strings, "\n");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return "error";
+        }
     }
 
 }
