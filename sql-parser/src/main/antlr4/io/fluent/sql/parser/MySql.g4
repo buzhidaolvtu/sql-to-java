@@ -26,6 +26,114 @@ statement
     :create_table
     ;
 
+select:
+    SELECT
+    (ALL | DISTINCT | DISTINCTROW )?
+      HIGH_PRIORITY?
+      STRAIGHT_JOIN?
+      SQL_SMALL_RESULT? SQL_BIG_RESULT? SQL_BUFFER_RESULT?
+      SQL_NO_CACHE? SQL_CALC_FOUND_ROWS?
+    select_list
+    (FROM table_references)?
+      (PARTITION partition_list)?
+    (WHERE where_condition)?
+    (GROUP BY group_by_col_list (WITH ROLLUP)?)?
+    (HAVING where_condition)?
+    (ORDER BY order_by_col_list (WITH ROLLUP)?)?
+    ;
+
+select_list:
+        select_expr (',' select_expr)*
+        ;
+
+group_by_col_list:
+        (col_name | expr | position) (',' (col_name | expr | position))*
+        ;
+
+order_by_col_list:
+        (col_name | expr | position) (ASC | DESC)?  (',' (col_name | expr | position) (ASC | DESC)? )*
+        ;
+
+expr:
+    ;
+
+position:
+        ;
+
+select_expr:
+        ;
+
+table_references:
+    escaped_table_reference (',' escaped_table_reference)*
+    ;
+
+escaped_table_reference:
+    table_reference
+    ;
+
+table_reference:
+    table_factor
+  | table_reference (INNER | CROSS)? JOIN table_factor join_condition?
+  | table_reference STRAIGHT_JOIN table_factor
+  | table_reference STRAIGHT_JOIN table_factor ON conditional_expr
+  | table_reference (LEFT|RIGHT) OUTER? JOIN table_reference join_condition
+  | table_reference NATURAL (INNER | (LEFT|RIGHT) OUTER?)? JOIN table_factor
+  ;
+
+table_factor:
+    tbl_name (PARTITION (partition_names))?
+        (AS? alias)? index_hint_list?
+  | table_subquery AS? alias (col_list)?
+  | '(' table_references ')'
+  ;
+
+partition_names:
+      ;
+
+alias:
+    ;
+
+table_subquery:
+    ;
+
+col_list:
+    ;
+
+
+join_condition:
+    ON conditional_expr
+  | USING (column_list)
+  ;
+
+conditional_expr:
+    ;
+
+column_list:
+    ;
+
+index_hint_list:
+    index_hint (',' index_hint)*
+    ;
+
+index_hint:
+    USE (INDEX|KEY)
+      (FOR (JOIN|ORDER BY|GROUP BY))? (index_list)?
+  | IGNORE (INDEX|KEY)
+      (FOR (JOIN|ORDER BY|GROUP BY))? (index_list)
+  | FORCE {INDEX|KEY}
+      (FOR (JOIN|ORDER BY|GROUP BY))? (index_list)
+  ;
+
+index_list:
+    index_name (',' index_name)*
+    ;
+
+partition_list:
+        ;
+
+where_condition:
+        ;
+
 create_table:
     CREATE (TEMPORARY)? TABLE (IF NOT EXISTS)? tbl_name '('
         create_definition (',' create_definition)*
@@ -424,6 +532,18 @@ STATS_PERSISTENT:'STATS_PERSISTENT';
 STATS_SAMPLE_PAGES:'STATS_SAMPLE_PAGES';
 TABLESPACE:'TABLESPACE';
 UNION:'UNION';
+DISTINCTROW:'DISTINCTROW';
+HIGH_PRIORITY:'HIGH_PRIORITY';
+STRAIGHT_JOIN:'STRAIGHT_JOIN';
+SQL_SMALL_RESULT:'SQL_SMALL_RESULT';
+SQL_BIG_RESULT:'SQL_BIG_RESULT';
+SQL_BUFFER_RESULT:'SQL_BUFFER_RESULT';
+SQL_NO_CACHE:'SQL_NO_CACHE';
+SQL_CALC_FOUND_ROWS:'SQL_CALC_FOUND_ROWS';
+ROLLUP:'ROLLUP';
+ORDER:'ORDER';
+NATURAL:'NATURAL';
+CROSS:'CROSS';
 
 
 EQ  : '=';
