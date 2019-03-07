@@ -57,11 +57,11 @@ column_definition:
     ;
 
 data_type:
-    TINYINT ('(' length ')' )?
-    |SMALLINT ('(' length ')' )?
-    |MEDIUMINT ('(' length ')' )?
-    |INT ('(' length ')' )?
-    |BIGINT ('(' length ')' )?
+    TINYINT ('(' length ')' )? UNSIGNED?
+    |SMALLINT ('(' length ')' )? UNSIGNED?
+    |MEDIUMINT ('(' length ')' )? UNSIGNED?
+    |INT ('(' length ')' )? UNSIGNED?
+    |BIGINT ('(' length ')' )? UNSIGNED?
     |DECIMAL '(' length ',' length ')'
     |NUMERIC
     |FLOAT
@@ -424,6 +424,7 @@ STATS_PERSISTENT:'STATS_PERSISTENT';
 STATS_SAMPLE_PAGES:'STATS_SAMPLE_PAGES';
 TABLESPACE:'TABLESPACE';
 UNION:'UNION';
+UNSIGNED:'UNSIGNED';
 
 
 EQ  : '=';

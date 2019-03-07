@@ -1,3 +1,25 @@
+CREATE TABLE `t_scm_city_order` (
+  `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
+  `city_order_sn` varchar(100)  NOT NULL DEFAULT '' COMMENT '订单编号',
+  `parent_order_sn` varchar(100)  NOT NULL DEFAULT '' COMMENT '父订单编号',
+  `apply_sn` varchar(100)  NOT NULL DEFAULT '' COMMENT '城市申请编码',
+  `order_type` tinyint(4) NOT NULL DEFAULT '0' COMMENT '订单类型 1：城市采购 2:城市三包 3:城市借货 4:城市还货 5:报废 6:调拨',
+  `buy_type` tinyint(4) NOT NULL DEFAULT '0' COMMENT '采购类型 1配件 2整车',
+  `status` smallint(6) NOT NULL DEFAULT '0' COMMENT '订单状态 10：待供应链发货 20：城市待收货 30：待城市发货 40：供应链待收货 50：结束',
+  `scm_deliver_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '供应链发货时间',
+  `city_receive_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '城市收货时间',
+  `city_deliver_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '城市发货时间',
+  `scm_receive_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '供应链收货时间',
+  `end_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '订单结束时间',
+  `create_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '订单创建时间',
+  `create_user` bigint(20) NOT NULL DEFAULT '0' COMMENT '创建人',
+  `create_user_name` varchar(50) NOT NULL DEFAULT '' COMMENT '创建人姓名',
+  `update_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '订单更新时间',
+  `update_user` bigint(20) NOT NULL DEFAULT '0' COMMENT '更新人',
+  `update_user_name` varchar(50)  NOT NULL DEFAULT '' COMMENT '更新人姓名',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
 create table `t_scm_buy_to_inventory_business_receipt` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
   `global_id` varchar(100) NOT NULL DEFAULT '' COMMENT '全库唯一性,和id作用等价,标识唯一记录，引用附件使用',
