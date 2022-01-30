@@ -5,6 +5,3 @@
 # not support
 - 不支持partition
 - 不支持create as select语法
-
-# 鸣谢
-赵津誉同学
